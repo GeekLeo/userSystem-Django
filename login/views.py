@@ -19,7 +19,7 @@ def hash_code(s, salt='userSystem'):
 
 
 def make_confirm_string(user):
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
     code = hash_code(user.name, now)
     models.ConfirmString.objects.create(code=code, user=user, )
     return code
