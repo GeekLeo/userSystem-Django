@@ -70,7 +70,7 @@ def login(request):
                 else:
                     message = 'wrong password'
             except:
-                message = 'wrong username'
+                message = '用户名不存在'
         return render(request, 'login/login.html', locals())
     login_form = forms.UserForm()
     return render(request, 'login/login.html', locals())
