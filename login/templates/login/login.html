@@ -8,7 +8,7 @@
 {% block content %}
     <div class="container">
         <div class="col-md-4 col-md-offset-4">
-            <form class='form-login' action="/login/" method="post">
+            <form class='form-login' action="{% url 'login' %}" method="post">
                 {% if message %}
                     <div class="alert alert-warning">{{ message }}</div>
                 {% endif %}
@@ -31,6 +31,9 @@
                 <button type="reset" class="btn btn-warning pull-left">重置</button>
                 <button type="submit" class="btn btn-primary pull-right">提交</button>
             </form>
+        <div>
+            <a href="{% url 'apply_reset' %}">忘记密码</a>
+        </div>
         </div>
     </div> <!-- /container -->
 {% endblock content %}
