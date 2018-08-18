@@ -10,6 +10,8 @@
 
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'uikit-2.27.5/css/uikit.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -20,7 +22,7 @@
     {% block css %}{% endblock css %}
 </head>
 <body>
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -31,40 +33,61 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'index' %}">UserSystem</a>
+            <a class="navbar-brand" href="{% url 'index' %}">刘耀昌的个人网站</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="my-nav">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'index' %}">主页</a></li>
+                <li class="active"><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> 主页</a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if request.session.is_login %}
-{#                    <li><a href="#">当前在线：{{ request.session.user_name }}</a></li>#}
-{#                    <li><a href="{% url 'logout' %}">注销登陆</a></li>#}
-{#                    <li><a href="{% url 'change_password' %}">修改密码</a></li>#}
+                    {#                    <li><a href="#">当前在线：{{ request.session.user_name }}</a></li>#}
+                    {#                    <li><a href="{% url 'logout' %}">注销登陆</a></li>#}
+                    {#                    <li><a href="{% url 'change_password' %}">修改密码</a></li>#}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">{{ request.session.user_name }} <span class="caret"></span></a>
+                           aria-expanded="false"><span
+                                class="glyphicon glyphicon-user"></span> {{ request.session.user_name }} <span
+                                class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url 'logout' %}">注销登陆</a></li>
-                            <li><a href="{% url 'change_password' %}">修改密码</a></li>
+                            <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> 注销登陆</a>
+                            </li>
+                            <li><a href="{% url 'change_password' %}"><span class="glyphicon glyphicon-lock"></span>
+                                修改密码</a></li>
                         </ul>
                     </li>
                 {% else %}
-                    <li><a href="{% url 'login' %}">登录</a></li>
-                    <li><a href="{% url 'register' %}">注册</a></li>
+                    <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                    <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-registration-mark"></span>
+                        注册</a></li>
                 {% endif %}
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
 {% block content %}{% endblock content %}
+<div class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
+    <div class="uk-container uk-container-center uk-text-center">
+        <div class="uk-panel uk-margin-top uk-margin-bottom">
+            <p>
+                <a target="_blank" href="http://weibo.com/u/2364461481" class="uk-icon-button uk-icon-weibo"></a>
+                <a target="_blank" href="https://github.com/GeekLeo" class="uk-icon-button uk-icon-github"></a>
+                <a target="_blank" href="#" class="uk-icon-button uk-icon-linkedin-square"></a>
+                <a target="_blank" href="https://twitter.com/LiuYaochang" class="uk-icon-button uk-icon-twitter"></a>
+            </p>
+            <p>Copyright &copy; {% now "Y" %} - All rights reserved - Yaochang.Liu</p>
 
+        </div>
+
+    </div>
+</div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'uikit-2.27.5/js/uikit.min.js' %}"></script>
 </body>
 </html>

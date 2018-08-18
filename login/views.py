@@ -25,7 +25,7 @@ def make_confirm_string(user):
     return code
 
 
-def send_email(email, code):
+def send_register_email(email, code):
     subject = '来自userSystem的注册确认邮件'
 
     text_content = '''感谢注册userSystem，enjoy your time ！\
@@ -43,7 +43,7 @@ def send_email(email, code):
     msg.send()
 
 
-def send_reset_email(email, code):
+def send_reset_email(email, code, user_id):
     subject = '来自userSystem的重置密码邮件'
 
     text_content = '''重置密码需要你的邮箱服务器提供HTML链接功能 ！\
@@ -51,9 +51,9 @@ def send_reset_email(email, code):
 
     html_content = '''
                     <p>请点击以下链接进行密码重置！</p>
-                    <p><a href="http://{}/reset_password/?code={}&email={}" target=blank>重置密码</a></p>
+                    <p><a href="http://{}/resetPassword/?code={}&userId={}" target=blank>重置密码</a></p>
                     <p>此链接有效期为{}天！</p>
-                    '''.format('127.0.0.1:8000', code, email, settings.CONFIRM_DAYS)
+                    '''.format('127.0.0.1:8000', code, user_id, settings.CONFIRM_DAYS)
 
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
     msg.attach_alternative(html_content, "text/html")
@@ -126,7 +126,7 @@ def register(request):
                 new_user.save()
 
                 code = make_confirm_string(new_user)
-                send_email(email, code)
+                send_register_email(email, code)
                 message = '请前往注册邮箱，进行邮件确认！'
 
                 return render(request, 'login/confirm.html', locals())
@@ -141,7 +141,7 @@ def logout(request):
     return redirect("index")
 
 
-def user_confirm(request):
+def register_confirm(request):
     code = request.GET.get('code', None)
     message = ''
     try:
@@ -200,7 +200,7 @@ def apply_reset(request):
             try:
                 user = models.User.objects.get(email=email)
                 code = make_confirm_string(user)
-                send_reset_email(email, code)
+                send_reset_email(email, code, user.id)
                 message = '请前往邮箱，进行密码重置！'
             except:
                 message = "该邮箱未注册本网站账号"
@@ -210,8 +210,32 @@ def apply_reset(request):
 
 
 def reset_password(request):
+    if request.method == "POST":
+        reset_password_form = forms.ResetPasswordForm(request.POST)
+        message = "请检查字段"
+        if reset_password_form.is_valid():
+            # email = reset_password_form.cleaned_data['email']
+            # email = request.session['email']
+            new_password1 = reset_password_form.cleaned_data['new_password1']
+            new_password2 = reset_password_form.cleaned_data['new_password2']
+            if new_password1 != new_password2:
+                message = "两次输入密码不相同！"
+                return render(request, 'login/resetpassword.html', locals())
+            else:
+                try:
+                    user = models.User.objects.get(pk=request.session['user_id'])
+                    user.password = hash_code(new_password1)
+                    user.save()
+                    message = "密码已重置，请登陆！"
+                    user.confirmstring.delete()
+                    request.session.flush()
+
+                except:
+                    message = "该邮箱未注册本网站账号"
+        return render(request, 'login/confirm.html', locals())
     code = request.GET.get('code', None)
-    email = request.GET.get('email', None)
+    # email = request.GET.get('email', None)
+    request.session['user_id'] = request.GET.get('userId', None)
 
     message = ''
     try:
@@ -226,32 +250,6 @@ def reset_password(request):
         message = '您的邮件已经过期！请重新提交忘记密码申请!'
         return render(request, 'login/applyreset.html', locals())
     else:
-        # reset_password_form = forms.ResetPasswordForm()
-        # return render(request, 'login/resetpassword.html', locals())
-        return redirect('reset_confirm')
-
-
-def reset_confirm(request):
-    if request.method == "POST":
-        reset_password_form = forms.ResetPasswordForm(request.POST)
-        message = "请检查字段"
-        if reset_password_form.is_valid():
-            email = reset_password_form.cleaned_data['email']
-            new_password1 = reset_password_form.cleaned_data['new_password1']
-            new_password2 = reset_password_form.cleaned_data['new_password2']
-            if new_password1 != new_password2:
-                message = "两次输入密码不相同！"
-                return render(request, 'login/resetpassword.html', locals())
-            else:
-                try:
-                    user = models.User.objects.get(email=email)
-                    user.password = hash_code(new_password1)
-                    user.save()
-                    message = "密码已重置，请登陆！"
-                    user.confirmstring.delete()
-
-                except:
-                    message = "该邮箱未注册本网站账号"
-        return render(request, 'login/confirm.html', locals())
-    reset_password_form = forms.ResetPasswordForm()
-    return render(request, 'login/resetpassword.html', locals())
+        reset_password_form = forms.ResetPasswordForm()
+        return render(request, 'login/resetpassword.html', locals())
+        # return redirect('reset_confirm')
