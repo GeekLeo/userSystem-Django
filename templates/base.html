@@ -41,6 +41,8 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> 主页</a>
                 </li>
+                <li class=""><a href="mailto:Geek_Leo@outlook.com"><span class="glyphicon glyphicon-envelope"></span>
+                    联系博主</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if request.session.is_login %}
@@ -57,6 +59,10 @@
                             </li>
                             <li><a href="{% url 'change_password' %}"><span class="glyphicon glyphicon-lock"></span>
                                 修改密码</a></li>
+                            {% if request.session.user_name == "testUser" %}
+                                <li><a href="{% url 'create' %}"><span class="glyphicon glyphicon-edit"></span> 创建博客</a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </li>
                 {% else %}
