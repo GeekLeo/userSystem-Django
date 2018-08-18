@@ -7,7 +7,7 @@ from login.models import User
 # Create your views here.
 
 def index(request):
-    blog_list = models.Blog.objects.order_by('-c_time')
+    blog_list = models.Blog.objects.order_by('-m_time').order_by('-c_time')
     return render(request, 'blog/index.html', locals())
 
 
@@ -65,6 +65,10 @@ def comment(request):
         except:
             message = "不存在该博客"
             return render(request, 'blog/detail.html', locals())
+        if not text or not text.strip():
+            message = "请输入评论内容"
+            return render(request, 'blog/detail.html', locals())
+            # return redirect('blog:detail', blog_id=blog_id, message=message)
         new_comment = models.Comment(text=text, blog_id=blog_id, user_id=user_id)
         new_comment.save()
         return redirect('blog:detail', blog_id=blog_id)

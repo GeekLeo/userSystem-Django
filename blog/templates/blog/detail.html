@@ -12,38 +12,48 @@
                 </article>
 
                 <hr class="uk-article-divider">
-
+                <nav aria-label="Page navigation">
+                    <ul class="pager">
+                        {% if blog.id > 1 %}
+                        <li class="previous"><a href="{% url 'blog:detail' blog_id|add:-1 %}"><span aria-hidden="true">&larr;</span>
+                            Older</a></li>
+                        {% endif %}
+                        <li class="next"><a href="{% url 'blog:detail' blog_id|add:1 %}">Newer <span aria-hidden="true">&rarr;</span></a>
+                        </li>
+                    </ul>
+                </nav>
                 {% if request.session.is_login %}
                     <h3>发表评论</h3>
 
-                    <article class="uk-comment">
+{#                    <article class="uk-comment">#}
                         {#                        <header class="uk-comment-header">#}
                         {#                            <img class="uk-comment-avatar uk-border-circle" width="50" height="50"#}
                         {#                                 src="{{ __user__.image }}">#}
                         {#                            <h4 class="uk-comment-title">{{ __user__.name }}</h4>#}
                         {#                        </header>#}
-                        <div class="uk-comment-body">
-                            <form class="uk-form" action="{% url 'blog:comment' %}" method="post">
+{#                        <div class="uk-comment-body">#}
+                            <form class="form-horizontal" action="{% url 'blog:comment' %}" method="post">
                                 {% if message %}
                                     <div class="alert alert-warning">{{ message }}</div>
                                 {% endif %}
                                 {% csrf_token %}
-                                <div class="uk-form-row">
-{#                                    <textarea rows="6" placeholder="说点什么吧" style="width:100%;resize:none;"></textarea>#}
+                                <div class="form-group">
+                                    {#                                    <textarea rows="6" placeholder="说点什么吧" style="width:100%;resize:none;"></textarea>#}
                                     {#                                    {{ comment_form.text }}#}
-                                    <textarea name="text" id="text" rows="6" placeholder="说点什么吧" style="width:100%;resize:none;"></textarea>
+                                    <textarea name="text" id="text" rows="6" placeholder="说点什么吧"
+                                              class="form-control"></textarea>
                                 </div>
                                 <input type="hidden" name="blog_id" id="blog_id" class="blog_id" value="{{ blog_id }}">
                                 <input type="hidden" name="user_id" id="user_id" class="user_id"
                                        value="{{ request.session.user_id }}">
-                                <div class="uk-form-row">
-                                    <button type="submit" class="uk-button uk-button-primary"><i
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"><i
                                             class="uk-icon-comment"></i> 发表评论
                                     </button>
                                 </div>
                             </form>
-                        </div>
-                    </article>
+{#                        </div>#}
+{#                    </article>#}
                     <hr class="uk-article-divider">
                 {% else %}
                     <h3><a href="{% url 'login:login' %}">登陆后发表评论</a></h3>
@@ -54,21 +64,37 @@
                 <ul class="uk-comment-list">
                     {% if comments %}
                         {% for comment in comments %}
-                            <hr class="uk-article-divider">
-                            <li>
-                                <article class="uk-comment">
-                                    <header class="uk-comment-header">
-                                        {#                                    <img class="uk-comment-avatar uk-border-circle" width="50" height="50"#}
-                                        {#                                         src="{{ comment.user_image }}">#}
-                                        <h4 class="uk-comment-title">{{ comment.user.name }}
-                                            {% if comment.user.name == "testUser" %}<span class="label label-info">博主</span>{% endif %}</h4>
-                                        <p class="uk-comment-meta">{{ comment.c_time|date }}</p>
-                                    </header>
-                                    <div class="uk-comment-body">
-                                        {{ comment.text }}
-                                    </div>
-                                </article>
-                            </li>
+
+                            {#                            <li>#}
+                            {#                                <article class="uk-comment">#}
+                            {#                                    <header class="uk-comment-header">#}
+                            {#                                    <img class="uk-comment-avatar uk-border-circle" width="50" height="50"#}
+                            {#                                         src="{{ comment.user_image }}">#}
+                            {#                                        <h4 class="uk-comment-title">{{ comment.user.name }}#}
+                            {#                                            {% if comment.user.name == "testUser" %}#}
+                            {#                                                <span class="label label-info">博主</span>{% endif %}</h4>#}
+                            {#                                        <p class="uk-comment-meta">{{ comment.c_time|date }}</p>#}
+                            {#                                    </header>#}
+                            {#                                    <div class="uk-comment-body">#}
+                            {#                                        {{ comment.text }}#}
+                            {#                                    </div>#}
+                            {#                                </article>#}
+                            {#                            </li>#}
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><span
+                                            class="glyphicon glyphicon-user"></span> {{ comment.user.name }}
+                                        {% if comment.user.name == "testUser" %}
+                                            <span class="label label-info">博主</span>{% endif %}</h3>
+                                    <h3 class="panel-title">
+                                        <small><span class="glyphicon glyphicon-time"></span> {{ comment.c_time|date }}
+                                        </small>
+                                    </h3>
+                                </div>
+                                <div class="panel-body">
+                                    {{ comment.text }}
+                                </div>
+                            </div>
 
                         {% endfor %}
                     {% else %}

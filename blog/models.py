@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import datetime
 
 
 # Create your models here.
@@ -9,14 +10,18 @@ class Blog(models.Model):
     summary = models.TextField()
     content = models.TextField()
     c_time = models.DateTimeField(auto_now_add=True)
+    m_time = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
 
     # user = models.ForeignKey('login.User', on_delete=models.CASCADE)
     def __str__(self):
         return self.name
 
+    def was_published_recently(self):
+        return timezone.now() >= self.c_time >= timezone.now() - datetime.timedelta(days=1)
+
     class Meta:
-        ordering = ["-c_time"]
+        ordering = ["-m_time"]
         verbose_name = "博客"
         verbose_name_plural = "博客"
 
@@ -28,6 +33,7 @@ class Comment(models.Model):
     is_deleted = models.BooleanField(default=False)
     blog = models.ForeignKey('blog.Blog', on_delete=models.CASCADE)
     user = models.ForeignKey('login.User', on_delete=models.CASCADE)
+
     # parent_comment = models.ForeignKey('self', on_delete=models.CASCADE)
 
     def __str__(self):
