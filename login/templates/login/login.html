@@ -6,7 +6,7 @@
 {% block content %}
     <div class="container">
         <div class="col-md-4 col-md-offset-4">
-            <form class='form-login' action="{% url 'login' %}" method="post">
+            <form class='form-login' action="{% url 'login:login' %}" method="post">
                 {% if message %}
                     <div class="alert alert-warning">
                         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -36,7 +36,7 @@
 
         </div>
         <div class="col-md-12 text-center">
-            <a class="btn btn-danger" href="{% url 'apply_reset' %}">忘记密码</a>
+            <a class="btn btn-danger" href="{% url 'login:apply_reset' %}">忘记密码</a>
         </div>
     </div> <!-- /container -->
 {% endblock content %}

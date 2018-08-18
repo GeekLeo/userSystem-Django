@@ -33,13 +33,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'index' %}">刘耀昌的个人网站</a>
+            <a class="navbar-brand" href="{% url 'home' %}">刘耀昌的个人网站</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="my-nav">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> 主页</a>
+                <li class="active"><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> 主页</a>
                 </li>
                 <li class=""><a href="mailto:Geek_Leo@outlook.com"><span class="glyphicon glyphicon-envelope"></span>
                     联系博主</a></li>
@@ -55,19 +55,19 @@
                                 class="glyphicon glyphicon-user"></span> {{ request.session.user_name }} <span
                                 class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> 注销登陆</a>
+                            <li><a href="{% url 'login:logout' %}"><span class="glyphicon glyphicon-log-out"></span> 注销登陆</a>
                             </li>
-                            <li><a href="{% url 'change_password' %}"><span class="glyphicon glyphicon-lock"></span>
+                            <li><a href="{% url 'login:change_password' %}"><span class="glyphicon glyphicon-lock"></span>
                                 修改密码</a></li>
                             {% if request.session.user_name == "testUser" %}
-                                <li><a href="{% url 'create' %}"><span class="glyphicon glyphicon-edit"></span> 创建博客</a>
+                                <li><a href="{% url 'blog:create' %}"><span class="glyphicon glyphicon-edit"></span> 创建博客</a>
                                 </li>
                             {% endif %}
                         </ul>
                     </li>
                 {% else %}
-                    <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-                    <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-registration-mark"></span>
+                    <li><a href="{% url 'login:login' %}"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                    <li><a href="{% url 'login:register' %}"><span class="glyphicon glyphicon-registration-mark"></span>
                         注册</a></li>
                 {% endif %}
             </ul>

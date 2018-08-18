@@ -67,7 +67,7 @@ def index(request):
 
 def login(request):
     if request.session.get('is_login', None):
-        return redirect("index")
+        return redirect("login:index")
     if request.method == "POST":
         login_form = forms.UserForm(request.POST)
         message = 'All field are required'
@@ -83,7 +83,7 @@ def login(request):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
-                    return redirect('index')
+                    return redirect('login:index')
                 else:
                     message = 'wrong password'
             except:
@@ -95,7 +95,7 @@ def login(request):
 
 def register(request):
     if request.session.get('is_login', None):
-        return redirect('index')
+        return redirect('login:index')
     if request.method == "POST":
         register_form = forms.RegisterForm(request.POST)
         message = "Please check the field"
@@ -136,9 +136,9 @@ def register(request):
 
 def logout(request):
     if not request.session.get('is_login', None):
-        return redirect("index")
+        return redirect("login:index")
     request.session.flush()
-    return redirect("index")
+    return redirect("login:index")
 
 
 def register_confirm(request):
@@ -166,7 +166,7 @@ def register_confirm(request):
 
 def change_password(request):
     if not request.session.get('is_login', None):
-        return redirect("index")
+        return redirect("login:index")
     if request.method == "POST":
         change_password_form = forms.ChangePasswordForm(request.POST)
         message = "请检查字段"
@@ -252,4 +252,3 @@ def reset_password(request):
     else:
         reset_password_form = forms.ResetPasswordForm()
         return render(request, 'login/resetpassword.html', locals())
-        # return redirect('reset_confirm')

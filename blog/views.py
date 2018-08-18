@@ -6,7 +6,8 @@ from . import models
 # Create your views here.
 
 def index(request):
-    pass
+    blog_list = models.Blog.objects.order_by('c_time')
+    return render(request, 'blog/index.html', locals())
 
 
 def create(request):
