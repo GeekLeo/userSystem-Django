@@ -22,13 +22,13 @@ class Blog(models.Model):
 
 
 class Comment(models.Model):
-    title = models.CharField(max_length=128)
+    # title = models.CharField(max_length=128)
     text = models.TextField()
     c_time = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
     blog = models.ForeignKey('blog.Blog', on_delete=models.CASCADE)
     user = models.ForeignKey('login.User', on_delete=models.CASCADE)
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE)
+    # parent_comment = models.ForeignKey('self', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.blog.name + " UserName:" + self.user.name

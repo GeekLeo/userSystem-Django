@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Blog详情{% endblock %}
+{% block content %}
+
+    <div class="uk-container uk-container-center">
+        <div class="uk-grid">
+            <div class="uk-width-medium-4-5">
+                <article class="uk-article">
+                    <h2>{{ blog.name }}</h2>
+                    <p class="uk-article-meta">发表于{{ blog.c_time|date }}</p>
+                    <p>{{ blog.content }}</p>
+                </article>
+
+                <hr class="uk-article-divider">
+
+                {% if request.session.is_login %}
+                    <h3>发表评论</h3>
+
+                    <article class="uk-comment">
+                        {#                        <header class="uk-comment-header">#}
+                        {#                            <img class="uk-comment-avatar uk-border-circle" width="50" height="50"#}
+                        {#                                 src="{{ __user__.image }}">#}
+                        {#                            <h4 class="uk-comment-title">{{ __user__.name }}</h4>#}
+                        {#                        </header>#}
+                        <div class="uk-comment-body">
+                            <form class="uk-form" action="{% url 'blog:comment' %}" method="post">
+                                {% if message %}
+                                    <div class="alert alert-warning">{{ message }}</div>
+                                {% endif %}
+                                {% csrf_token %}
+                                <div class="uk-form-row">
+{#                                    <textarea rows="6" placeholder="说点什么吧" style="width:100%;resize:none;"></textarea>#}
+                                    {#                                    {{ comment_form.text }}#}
+                                    <textarea name="text" id="text" rows="6" placeholder="说点什么吧" style="width:100%;resize:none;"></textarea>
+                                </div>
+                                <input type="hidden" name="blog_id" id="blog_id" class="blog_id" value="{{ blog_id }}">
+                                <input type="hidden" name="user_id" id="user_id" class="user_id"
+                                       value="{{ request.session.user_id }}">
+                                <div class="uk-form-row">
+                                    <button type="submit" class="uk-button uk-button-primary"><i
+                                            class="uk-icon-comment"></i> 发表评论
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </article>
+                    <hr class="uk-article-divider">
+                {% else %}
+                    <h3><a href="{% url 'login:login' %}">登陆后发表评论</a></h3>
+                {% endif %}
+
+                <h3>最新评论</h3>
+
+                <ul class="uk-comment-list">
+                    {% if comments %}
+                        {% for comment in comments %}
+                            <hr class="uk-article-divider">
+                            <li>
+                                <article class="uk-comment">
+                                    <header class="uk-comment-header">
+                                        {#                                    <img class="uk-comment-avatar uk-border-circle" width="50" height="50"#}
+                                        {#                                         src="{{ comment.user_image }}">#}
+                                        <h4 class="uk-comment-title">{{ comment.user.name }}
+                                            {% if comment.user.name == "testUser" %}<span class="label label-info">博主</span>{% endif %}</h4>
+                                        <p class="uk-comment-meta">{{ comment.c_time|date }}</p>
+                                    </header>
+                                    <div class="uk-comment-body">
+                                        {{ comment.text }}
+                                    </div>
+                                </article>
+                            </li>
+
+                        {% endfor %}
+                    {% else %}
+                        <p>还没有人评论...</p>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
