@@ -7,7 +7,7 @@ from login.models import User
 # Create your views here.
 
 def index(request):
-    blog_list = models.Blog.objects.filter(is_deleted=False).order_by('-m_time').order_by('-c_time')
+    blog_list = models.Blog.objects.filter(is_deleted=False).order_by('-c_time')
     return render(request, 'blog/index.html', locals())
 
 
@@ -60,7 +60,7 @@ def edit(request, blog_id):
             return redirect('blog:detail', blog_id=blog_id)
         except:
             message = '不存在该博客！'
-        return render(request, 'login/index.html',locals())
+        return render(request, 'login/index.html', locals())
 
     try:
         blog = models.Blog.objects.get(pk=blog_id)
@@ -102,25 +102,27 @@ def detail(request, blog_id):
     blog = models.Blog.objects.get(pk=blog_id)
     is_oldest = True
     is_newest = True
-    while blog.id > 1:
+    blog_id_copy1 = blog.id
+    blog_id_copy2 = blog.id
+    while blog_id_copy1 > 1:
 
-        older_blog = models.Blog.objects.filter(pk=blog.id - 1).filter(is_deleted=False)
+        older_blog = models.Blog.objects.filter(pk=blog_id_copy1 - 1).filter(is_deleted=False)
         if older_blog:
             older_blog_id = older_blog[0].id
             older_blog_name = older_blog[0].name
             is_oldest = False
             break
         else:
-            blog.id = blog.id - 1
-    while blog.id < models.Blog.objects.order_by('-id')[0].id:
-        newer_blog = models.Blog.objects.filter(pk=blog.id + 1).filter(is_deleted=False)
+            blog_id_copy1 = blog_id_copy1 - 1
+    while blog_id_copy2 < models.Blog.objects.order_by('-id')[0].id:
+        newer_blog = models.Blog.objects.filter(pk=blog_id_copy2 + 1).filter(is_deleted=False)
         if newer_blog:
             newer_blog_id = newer_blog[0].id
             newer_blog_name = newer_blog[0].name
             is_newest = False
             break
         else:
-            blog.id = blog.id + 1
+            blog_id_copy2 = blog_id_copy2 + 1
 
     comments = models.Comment.objects.filter(blog_id=blog_id).order_by('-c_time')
     return render(request, 'blog/detail.html', locals())

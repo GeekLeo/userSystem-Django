@@ -16,11 +16,11 @@
                     <ul class="pager">
                         {% if not is_oldest %}
                             <li class="previous"><a href="{% url 'blog:detail' older_blog_id %}"><span
-                                    class="glyphicon glyphicon-backward"></span> {{ older_blog_name }}</a></li>
+                                    class="glyphicon glyphicon-chevron-left"></span> {{ older_blog_name }}</a></li>
                         {% endif %}
                         {% if not is_newest %}
                             <li class="next"><a href="{% url 'blog:detail' newer_blog_id %}">{{ newer_blog_name }} <span
-                                    class="glyphicon glyphicon-forward"></span></a>
+                                    class="glyphicon glyphicon-chevron-right"></span></a>
                             </li>
                         {% endif %}
                     </ul>

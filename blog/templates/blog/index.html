@@ -2,9 +2,9 @@
 {% block title %}Blog主页{% endblock %}
 {% block content %}
     {% if message %}
-    <div class="row">
-        <h1 class="text-center">{{ message }}</h1>
-    </div>
+        <div class="row">
+            <h1 class="text-center">{{ message }}</h1>
+        </div>
     {% endif %}
     <div class="uk-container uk-container-center">
         <div class="uk-grid">
@@ -16,14 +16,38 @@
                         </a></h2>
                         <p class="uk-article-meta">发表于{{ blog.c_time }}</p>
                         <p>{{ blog.summary }}</p>
-                        <p><a href="{% url 'blog:detail' blog.id %}">继续阅读 <i class="uk-icon-angle-double-right"></i></a>
-                        </p>
-                        {% if request.session.user_name == "testUser" %}
-                            <p class="pull-right"><a href="{% url 'blog:edit' blog.id %}" class="btn btn-default">edit</a><a href="{% url 'blog:delete' blog.id %}"
-                                                                                                 class="btn btn-default">delete</a>
+                        <div class="col-md-6" style="padding-left: 0px;">
+                            <p><a href="{% url 'blog:detail' blog.id %}">继续阅读 <i class="uk-icon-angle-double-right"></i></a>
                             </p>
-                        {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {% if request.session.user_name == "testUser" %}
+                                <div class="uk-button-group pull-right">
+
+                                    <a href="{% url 'blog:edit' blog.id %}" class="uk-button uk-button-primary"><i
+                                            class="uk-icon-edit"></i> Edit</a>
+                                    <!-- 这是关联了JavaScript的容器 -->
+                                    <div data-uk-dropdown="{mode:'click'}" class="uk-open">
+                                        <!-- 拨动下拉菜单的按钮 -->
+
+                                        <button class="uk-button uk-button-primary"><i class="uk-icon-caret-down"></i>
+                                        </button>
+
+                                        <div class="uk-dropdown uk-dropdown-small">
+                                            <ul class="uk-nav uk-nav-dropdown">
+                                                <li><a href="{% url 'blog:delete' blog.id %}"><i
+                                                        class="uk-icon-trash-o"></i>
+                                                    Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+
                     </article>
+
                     <hr class="uk-article-divider">
                 {% endfor %}
             </div>

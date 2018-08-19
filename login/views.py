@@ -56,8 +56,8 @@ def send_reset_email(email, code, user_id):
     html_content = '''
                     <p>请点击以下链接进行密码重置！</p>
                     <p><a href="http://{}/user/resetPassword/?code={}&userId={}" target=blank>重置密码</a></p>
-                    <p>此链接有效期为{}天！</p>
-                    '''.format('127.0.0.1:8000', code, user_id, settings.CONFIRM_DAYS)
+                    <p>此链接有效期为{}分钟！</p>
+                    '''.format('127.0.0.1:8000', code, user_id, settings.CONFIRM_MINUTES)
 
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
     msg.attach_alternative(html_content, "text/html")
@@ -259,7 +259,7 @@ def reset_password(request):
         return render(request, 'login/confirm.html', locals())
     c_time = reset_password_string.c_time
     now = timezone.now()
-    if now > c_time + datetime.timedelta(settings.CONFIRM_DAYS):
+    if now > c_time + datetime.timedelta(minutes=settings.CONFIRM_MINUTES):
         reset_password_string.delete()
         message = '您的邮件已经过期！请重新提交忘记密码申请!'
         return render(request, 'login/applyreset.html', locals())
