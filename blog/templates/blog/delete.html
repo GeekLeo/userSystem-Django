@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}delete确认{% endblock title %}
+{% block content %}
+    <div class="row">
+        <h1 class="text-center">{{ message }}</h1>
+    </div>
+    {% if blog %}
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <h3>确认要删除《{{ blog.name }}》？</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <a href="{% url 'blog:deleteConfirm' blog.id %}" class="btn btn-danger">delete</a>
+            <a href="{% url 'blog:detail' blog.id %}" class="btn btn-primary">back to detail</a>
+            <a href="{% url 'home' %}" class="btn btn-primary">back to blog index</a>
+        </div>
+    </div>
+    {% endif %}
+{% endblock content %}

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}base{% endblock title %}</title>
+    <title>{% block title %}base{% endblock title %} - 刘耀昌的个人网站</title>
 
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -39,7 +39,9 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="my-nav">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> 主页</a>
+                <li class=""><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> 主页</a>
+                </li>
+                <li class="active"><a href="{% url 'blog:index' %}"><span class="glyphicon glyphicon-book"></span> Blog</a>
                 </li>
                 <li class=""><a href="mailto:Geek_Leo@outlook.com"><span class="glyphicon glyphicon-envelope"></span>
                     联系博主</a></li>
@@ -55,7 +57,7 @@
                                 class="glyphicon glyphicon-user"></span> {{ request.session.user_name }} <span
                                 class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url 'login:logout' %}"><span class="glyphicon glyphicon-log-out"></span> 注销登陆</a>
+                            <li><a href="{% url 'login:logout' %}"><span class="glyphicon glyphicon-log-out"></span> 注销登录</a>
                             </li>
                             <li><a href="{% url 'login:change_password' %}"><span class="glyphicon glyphicon-lock"></span>
                                 修改密码</a></li>
@@ -67,7 +69,7 @@
                     </li>
                 {% else %}
                     <li><a href="{% url 'login:login' %}"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-                    <li><a href="{% url 'login:register' %}"><span class="glyphicon glyphicon-registration-mark"></span>
+                    <li><a href="{% url 'login:register' %}"><span class="glyphicon glyphicon-pencil"></span>
                         注册</a></li>
                 {% endif %}
             </ul>

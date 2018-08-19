@@ -21,6 +21,10 @@ def hash_code(s, salt='userSystem'):
 def make_confirm_string(user):
     now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
     code = hash_code(user.name, now)
+    same_user_string = models.ConfirmString.objects.filter(user=user)
+    if same_user_string:
+        same_user_string.delete()
+
     models.ConfirmString.objects.create(code=code, user=user, )
     return code
 
@@ -32,7 +36,7 @@ def send_register_email(email, code):
                     如果你看到这条消息，说明你的邮箱服务器不提供HTML链接功能，请联系管理员！'''
 
     html_content = '''
-                    <p>感谢注册<a href="http://{}/confirm/?code={}" target=blank>userSystem</a>，\
+                    <p>感谢注册<a href="http://{}/user/confirm/?code={}" target=blank>userSystem</a>，\
                     enjoy your time ！</p>
                     <p>请点击站点链接完成注册确认！</p>
                     <p>此链接有效期为{}天！</p>
@@ -51,7 +55,7 @@ def send_reset_email(email, code, user_id):
 
     html_content = '''
                     <p>请点击以下链接进行密码重置！</p>
-                    <p><a href="http://{}/resetPassword/?code={}&userId={}" target=blank>重置密码</a></p>
+                    <p><a href="http://{}/user/resetPassword/?code={}&userId={}" target=blank>重置密码</a></p>
                     <p>此链接有效期为{}天！</p>
                     '''.format('127.0.0.1:8000', code, user_id, settings.CONFIRM_DAYS)
 
@@ -67,7 +71,8 @@ def index(request):
 
 def login(request):
     if request.session.get('is_login', None):
-        return redirect("login:index")
+        message = "你处于已登录状态，无需重复登录！"
+        return render(request, 'login/index.html', locals())
     if request.method == "POST":
         login_form = forms.UserForm(request.POST)
         message = 'All field are required'
@@ -77,13 +82,14 @@ def login(request):
             try:
                 user = models.User.objects.get(name=username)
                 if not user.has_confirmed:
-                    message = '该用户还未通过邮件确认！'
-                    return render(request, 'login/login.html', locals())
+                    message = '该用户还未通过邮件确认，请前往注册邮箱进行账号激活！'
+                    return render(request, 'login/emailList.html', locals())
                 if user.password == hash_code(password):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
-                    return redirect('login:index')
+                    message = '你好，' + user.name + '！欢迎回来！'
+                    return render(request, 'login/index.html', locals())
                 else:
                     message = 'wrong password'
             except:
@@ -95,7 +101,8 @@ def login(request):
 
 def register(request):
     if request.session.get('is_login', None):
-        return redirect('login:index')
+        message = '你处于已登录状态，若要注册账号，请先注销登录！'
+        return render(request, 'login/index.html', locals())
     if request.method == "POST":
         register_form = forms.RegisterForm(request.POST)
         message = "Please check the field"
@@ -109,13 +116,17 @@ def register(request):
                 message = "两次输入密码不相同！"
                 return render(request, 'login/register.html', locals())
             else:
+                inactive_user = models.User.objects.filter(email=email).filter(has_confirmed=False)
+                if inactive_user:
+                    message = "该邮箱地址已被注册，但是尚未激活账号，请前往邮箱进行账号激活！"
+                    return render(request, 'login/emailList.html', locals())
+                same_email_user = models.User.objects.filter(email=email).filter(has_confirmed=True)
+                if same_email_user:
+                    message = "该邮箱地址已被注册，请更换其他邮箱！"
+                    return render(request, 'login/register.html', locals())
                 same_name_user = models.User.objects.filter(name=username)
                 if same_name_user:
                     message = "用户名已存在，请重新选择用户名！"
-                    return render(request, 'login/register.html', locals())
-                same_email_user = models.User.objects.filter(email=email)
-                if same_email_user:
-                    message = "该邮箱地址已被注册，请更换其他邮箱！"
                     return render(request, 'login/register.html', locals())
 
                 new_user = models.User()
@@ -129,16 +140,18 @@ def register(request):
                 send_register_email(email, code)
                 message = '请前往注册邮箱，进行邮件确认！'
 
-                return render(request, 'login/confirm.html', locals())
+                return render(request, 'login/emailList.html', locals())
     register_form = forms.RegisterForm()
     return render(request, 'login/register.html', locals())
 
 
 def logout(request):
     if not request.session.get('is_login', None):
-        return redirect("login:index")
+        message = '你尚未登录，无需注销登录！'
+        return render(request, 'login/index.html', locals())
     request.session.flush()
-    return redirect("login:index")
+    message = '成功注销登录！'
+    return render(request, 'login/index.html', locals())
 
 
 def register_confirm(request):
@@ -166,7 +179,8 @@ def register_confirm(request):
 
 def change_password(request):
     if not request.session.get('is_login', None):
-        return redirect("login:index")
+        message = "你尚未登录，无法进行密码修改"
+        return render(request, 'login/index.html', locals())
     if request.method == "POST":
         change_password_form = forms.ChangePasswordForm(request.POST)
         message = "请检查字段"
@@ -202,6 +216,7 @@ def apply_reset(request):
                 code = make_confirm_string(user)
                 send_reset_email(email, code, user.id)
                 message = '请前往邮箱，进行密码重置！'
+                return render(request, 'login/emailList.html', locals())
             except:
                 message = "该邮箱未注册本网站账号"
         return render(request, 'login/applyreset.html', locals())
@@ -229,9 +244,8 @@ def reset_password(request):
                     message = "密码已重置，请登陆！"
                     user.confirmstring.delete()
                     request.session.flush()
-
                 except:
-                    message = "该邮箱未注册本网站账号"
+                    message = "未找到用户id"
         return render(request, 'login/confirm.html', locals())
     code = request.GET.get('code', None)
     # email = request.GET.get('email', None)
@@ -239,14 +253,14 @@ def reset_password(request):
 
     message = ''
     try:
-        reset_password_confirm = models.ConfirmString.objects.get(code=code)
+        reset_password_string = models.ConfirmString.objects.get(code=code)
     except:
         message = '无效的重置密码请求!'
         return render(request, 'login/confirm.html', locals())
-    c_time = reset_password_confirm.c_time
+    c_time = reset_password_string.c_time
     now = timezone.now()
     if now > c_time + datetime.timedelta(settings.CONFIRM_DAYS):
-        reset_password_confirm.delete()
+        reset_password_string.delete()
         message = '您的邮件已经过期！请重新提交忘记密码申请!'
         return render(request, 'login/applyreset.html', locals())
     else:

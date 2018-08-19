@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Blog主页{% endblock %}
 {% block content %}
-
+    {% if message %}
+    <div class="row">
+        <h1 class="text-center">{{ message }}</h1>
+    </div>
+    {% endif %}
     <div class="uk-container uk-container-center">
         <div class="uk-grid">
             <div class="uk-width-medium-4-5">
@@ -10,10 +14,15 @@
                         <h2><a href="{% url 'blog:detail' blog.id %}">
                             {{ blog.name }}{% if blog.was_published_recently %}<span class="badge">New</span>{% endif %}
                         </a></h2>
-                        <p class="uk-article-meta">发表于{{ blog.c_time|date }}</p>
+                        <p class="uk-article-meta">发表于{{ blog.c_time }}</p>
                         <p>{{ blog.summary }}</p>
                         <p><a href="{% url 'blog:detail' blog.id %}">继续阅读 <i class="uk-icon-angle-double-right"></i></a>
                         </p>
+                        {% if request.session.user_name == "testUser" %}
+                            <p class="pull-right"><a href="{% url 'blog:edit' blog.id %}" class="btn btn-default">edit</a><a href="{% url 'blog:delete' blog.id %}"
+                                                                                                 class="btn btn-default">delete</a>
+                            </p>
+                        {% endif %}
                     </article>
                     <hr class="uk-article-divider">
                 {% endfor %}
