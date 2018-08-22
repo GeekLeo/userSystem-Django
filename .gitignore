@@ -1,8 +1,3 @@
 .idea
-settings.py
-login/__pycache__
-login/migrations/__pycache__
-userSystem/__pycache__
 
-blog/__pycache__
-blog/migrations/__pycache__
+__pycache__/
