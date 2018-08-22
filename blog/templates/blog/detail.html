@@ -1,14 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Blog详情{% endblock %}
 {% block content %}
-
     <div class="uk-container uk-container-center">
         <div class="uk-grid">
             <div class="uk-width-medium-4-5">
                 <article class="uk-article">
-                    <h2>{{ blog.name }}</h2>
-                    <p class="uk-article-meta">发表于{{ blog.c_time }}</p>
-                    <p>{{ blog.content }}</p>
+                    <div class="col-md-10">
+                        <h2>{{ blog.name }}</h2>
+                        <p class="uk-article-meta">发表于{{ blog.c_time }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        {% if request.session.user_name == "testUser" %}
+                            <div class="btn-group pull-right">
+                                <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-toggle="dropdown">操作
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a href="{% url 'blog:edit' blog.id %}">Edit</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'blog:delete' blog.id %}">Delete</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12">
+                        <p>{{ blog.content }}</p>
+                    </div>
+
                 </article>
 
                 <hr class="uk-article-divider">
@@ -27,14 +49,6 @@
                 </nav>
                 {% if request.session.is_login %}
                     <h3>发表评论</h3>
-
-                    {#                    <article class="uk-comment">#}
-                    {#                        <header class="uk-comment-header">#}
-                    {#                            <img class="uk-comment-avatar uk-border-circle" width="50" height="50"#}
-                    {#                                 src="{{ __user__.image }}">#}
-                    {#                            <h4 class="uk-comment-title">{{ __user__.name }}</h4>#}
-                    {#                        </header>#}
-                    {#                        <div class="uk-comment-body">#}
                     <form class="form-horizontal" action="{% url 'blog:comment' %}" method="post">
                         {% if message %}
                             <div class="alert alert-warning">{{ message }}</div>
@@ -55,8 +69,7 @@
                             </button>
                         </div>
                     </form>
-                    {#                        </div>#}
-                    {#                    </article>#}
+
                     <hr class="uk-article-divider">
                 {% else %}
                     <h3><a href="{% url 'login:login' %}">登陆后发表评论</a></h3>
@@ -67,21 +80,6 @@
                 <ul class="uk-comment-list">
                     {% for comment in comments %}
 
-                        {#                            <li>#}
-                        {#                                <article class="uk-comment">#}
-                        {#                                    <header class="uk-comment-header">#}
-                        {#                                    <img class="uk-comment-avatar uk-border-circle" width="50" height="50"#}
-                        {#                                         src="{{ comment.user_image }}">#}
-                        {#                                        <h4 class="uk-comment-title">{{ comment.user.name }}#}
-                        {#                                            {% if comment.user.name == "testUser" %}#}
-                        {#                                                <span class="label label-info">博主</span>{% endif %}</h4>#}
-                        {#                                        <p class="uk-comment-meta">{{ comment.c_time|date }}</p>#}
-                        {#                                    </header>#}
-                        {#                                    <div class="uk-comment-body">#}
-                        {#                                        {{ comment.text }}#}
-                        {#                                    </div>#}
-                        {#                                </article>#}
-                        {#                            </li>#}
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><span

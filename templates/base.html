@@ -41,7 +41,7 @@
             <ul class="nav navbar-nav">
                 <li class=""><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> 主页</a>
                 </li>
-                <li class="active"><a href="{% url 'blog:index' %}"><span class="glyphicon glyphicon-book"></span> Blog</a>
+                <li class=""><a href="{% url 'blog:index' %}"><span class="glyphicon glyphicon-book"></span> Blog</a>
                 </li>
                 <li class=""><a href="mailto:Geek_Leo@outlook.com"><span class="glyphicon glyphicon-envelope"></span>
                     联系博主</a></li>
@@ -77,7 +77,7 @@
     </div><!-- /.container-fluid -->
 </nav>
 {% block content %}{% endblock content %}
-<div class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
+<div class="uk-margin-large-top" style="background-color:#222; border-top:1px solid #ccc;">
     <div class="uk-container uk-container-center uk-text-center">
         <div class="uk-panel uk-margin-top uk-margin-bottom">
             <p>
@@ -86,7 +86,7 @@
                 <a target="_blank" href="#" class="uk-icon-button uk-icon-linkedin-square"></a>
                 <a target="_blank" href="https://twitter.com/LiuYaochang" class="uk-icon-button uk-icon-twitter"></a>
             </p>
-            <p>Copyright &copy; {% now "Y" %} - All rights reserved - Yaochang.Liu</p>
+            <p style="color: #eee;">Copyright &copy; {% now "Y" %} - All rights reserved - Yaochang.Liu</p>
 
         </div>
 
@@ -97,5 +97,6 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'uikit-2.27.5/js/uikit.min.js' %}"></script>
+<script src="{% static 'js/header.js' %}"></script>
 </body>
 </html>
